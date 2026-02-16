@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Northstar Outfitters</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="admin-bg">
+    <main class="admin-wrap">
+      <header class="admin-header">
+        <div>
+          <p class="eyebrow">Consumer Behavior Prototype</p>
+          <h1>Live Prediction Dashboard</h1>
+        </div>
+        <div class="admin-actions">
+          <button id="refreshBtn" class="btn btn-secondary">Refresh</button>
+          <a class="btn btn-primary" href="/">Back to Storefront</a>
+        </div>
+      </header>
+
+      <section class="kpi-grid">
+        <article class="kpi">
+          <p>Total Shown</p>
+          <strong id="kpiTotal">0</strong>
+        </article>
+        <article class="kpi">
+          <p>High Intent</p>
+          <strong id="kpiHigh">0</strong>
+        </article>
+        <article class="kpi">
+          <p>Medium Intent</p>
+          <strong id="kpiMedium">0</strong>
+        </article>
+        <article class="kpi">
+          <p>Low Intent</p>
+          <strong id="kpiLow">0</strong>
+        </article>
+      </section>
+
+      <section class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Session</th>
+              <th>User</th>
+              <th>Score</th>
+              <th>Label</th>
+              <th>Features</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="predictionRows"></tbody>
+        </table>
+      </section>
+    </main>
+    <script type="module" src="/admin.js"></script>
+  </body>
+</html>
+

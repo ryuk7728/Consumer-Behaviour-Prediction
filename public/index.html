@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Northstar Outfitters</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__topbar">
+        <span class="brand">Northstar Outfitters</span>
+        <div class="meta">
+          <span id="sessionPill" class="pill"></span>
+          <a class="admin-link" href="/admin">Admin Dashboard</a>
+        </div>
+      </div>
+      <div class="hero__content">
+        <h1>Built for Weekend Escapes</h1>
+        <p>
+          Explore durable essentials for travel, trail, and daily carry. Every
+          interaction in this prototype feeds the cloud prediction pipeline.
+        </p>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="products" id="products"></section>
+
+      <aside class="sidebar">
+        <h2>Your Cart</h2>
+        <ul id="cartItems" class="cart-items"></ul>
+        <button id="purchaseBtn" class="btn btn-primary">Simulate Purchase</button>
+        <button id="predictBtn" class="btn btn-secondary">Get Session Prediction</button>
+        <div id="predictionCard" class="prediction-card hidden"></div>
+      </aside>
+    </main>
+
+    <div id="toast" class="toast hidden"></div>
+    <script type="module" src="/storefront.js"></script>
+  </body>
+</html>
+

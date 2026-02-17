@@ -68,6 +68,16 @@ export class CosmosStore {
     return resources;
   }
 
+  async getAllEvents() {
+    const querySpec = {
+      query: "SELECT * FROM c"
+    };
+    const { resources } = await this.eventsContainer.items
+      .query(querySpec)
+      .fetchAll();
+    return resources;
+  }
+
   async savePrediction(prediction) {
     await this.predictionsContainer.items.create(prediction);
   }
@@ -83,4 +93,3 @@ export class CosmosStore {
     return resources;
   }
 }
-

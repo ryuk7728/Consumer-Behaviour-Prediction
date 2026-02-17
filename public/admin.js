@@ -1,43 +1,117 @@
-const rowsNode = document.querySelector("#predictionRows");
 const refreshBtn = document.querySelector("#refreshBtn");
-const kpiTotal = document.querySelector("#kpiTotal");
-const kpiHigh = document.querySelector("#kpiHigh");
-const kpiMedium = document.querySelector("#kpiMedium");
-const kpiLow = document.querySelector("#kpiLow");
+const engagementRows = document.querySelector("#engagementRows");
+const engagementChart = document.querySelector("#engagementChart");
+const userSelect = document.querySelector("#userSelect");
+const likelihoodRows = document.querySelector("#likelihoodRows");
+const likelihoodChart = document.querySelector("#likelihoodChart");
 
-refreshBtn.addEventListener("click", loadPredictions);
-loadPredictions();
+refreshBtn.addEventListener("click", loadAll);
+userSelect.addEventListener("change", loadUserLikelihood);
 
-async function loadPredictions() {
-  const response = await fetch("/api/admin/predictions?limit=20");
+loadAll();
+
+async function loadAll() {
+  await Promise.all([loadEngagement(), loadUsers()]);
+}
+
+async function loadEngagement() {
+  const response = await fetch("/api/admin/engagement-summary");
   const data = await response.json();
-  const predictions = data.predictions || [];
+  const products = data.products || [];
+  const maxScore = Math.max(1, ...products.map((item) => item.engagement_score));
 
-  const counts = { High: 0, Medium: 0, Low: 0 };
-  rowsNode.innerHTML = "";
+  engagementRows.innerHTML = "";
+  engagementChart.innerHTML = "";
 
-  for (const row of predictions) {
-    counts[row.label] = (counts[row.label] || 0) + 1;
+  for (const item of products) {
     const tr = document.createElement("tr");
-    const labelClass = String(row.label || "").toLowerCase();
     tr.innerHTML = `
-      <td>${row.session_id}</td>
-      <td>${row.user_id}</td>
-      <td>${Number(row.purchase_likelihood || 0).toFixed(4)}</td>
-      <td><span class="badge ${labelClass}">${row.label}</span></td>
-      <td>views ${row.features?.product_views ?? 0}, cart ${row.features?.cart_adds ?? 0}, secs ${row.features?.session_seconds ?? 0}</td>
-      <td>${new Date(row.predicted_at).toLocaleString()}</td>
+      <td>${item.product_name}</td>
+      <td>${item.views}</td>
+      <td>${item.add_to_cart}</td>
+      <td>${item.purchases}</td>
+      <td>${item.engagement_score}</td>
     `;
-    rowsNode.appendChild(tr);
+    engagementRows.appendChild(tr);
+
+    const width = (item.engagement_score / maxScore) * 100;
+    const bar = document.createElement("div");
+    bar.className = "metric-row";
+    bar.innerHTML = `
+      <span>${item.product_name}</span>
+      <div class="metric-track"><div class="metric-fill" style="width:${width.toFixed(1)}%"></div></div>
+      <strong>${item.engagement_score}</strong>
+    `;
+    engagementChart.appendChild(bar);
+  }
+}
+
+async function loadUsers() {
+  const response = await fetch("/api/admin/users");
+  const data = await response.json();
+  const users = data.users || [];
+
+  userSelect.innerHTML = "";
+  if (!users.length) {
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = "No users available";
+    userSelect.appendChild(option);
+    likelihoodRows.innerHTML =
+      `<tr><td colspan="5">No user activity yet. Generate activity from storefront.</td></tr>`;
+    likelihoodChart.innerHTML = "";
+    return;
   }
 
-  if (!predictions.length) {
-    rowsNode.innerHTML = `<tr><td colspan="6">No predictions yet. Trigger one from the storefront.</td></tr>`;
+  for (const userId of users) {
+    const option = document.createElement("option");
+    option.value = userId;
+    option.textContent = userId;
+    userSelect.appendChild(option);
   }
 
-  kpiTotal.textContent = String(predictions.length);
-  kpiHigh.textContent = String(counts.High || 0);
-  kpiMedium.textContent = String(counts.Medium || 0);
-  kpiLow.textContent = String(counts.Low || 0);
+  await loadUserLikelihood();
+}
+
+async function loadUserLikelihood() {
+  const userId = userSelect.value;
+  if (!userId) return;
+
+  const response = await fetch(
+    `/api/admin/user-likelihood?user_id=${encodeURIComponent(userId)}`
+  );
+  if (!response.ok) {
+    likelihoodRows.innerHTML =
+      `<tr><td colspan="5">Unable to fetch user likelihoods for ${userId}.</td></tr>`;
+    likelihoodChart.innerHTML = "";
+    return;
+  }
+
+  const data = await response.json();
+  const rows = data.likelihoods || [];
+
+  likelihoodRows.innerHTML = "";
+  likelihoodChart.innerHTML = "";
+
+  for (const row of rows) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${row.product_name}</td>
+      <td>${(row.purchase_probability * 100).toFixed(1)}%</td>
+      <td>${row.user_views}</td>
+      <td>${row.user_add_to_cart}</td>
+      <td>${row.user_purchases}</td>
+    `;
+    likelihoodRows.appendChild(tr);
+
+    const bar = document.createElement("div");
+    bar.className = "metric-row";
+    bar.innerHTML = `
+      <span>${row.product_name}</span>
+      <div class="metric-track"><div class="metric-fill alt" style="width:${(row.purchase_probability * 100).toFixed(1)}%"></div></div>
+      <strong>${(row.purchase_probability * 100).toFixed(1)}%</strong>
+    `;
+    likelihoodChart.appendChild(bar);
+  }
 }
 

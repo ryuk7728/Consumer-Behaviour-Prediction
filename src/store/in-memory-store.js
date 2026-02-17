@@ -28,6 +28,10 @@ export class InMemoryStore {
     return this.eventsBySession.get(sessionId) || [];
   }
 
+  async getAllEvents() {
+    return [...this.eventsBySession.values()].flat();
+  }
+
   async savePrediction(prediction) {
     this.predictions.push(prediction);
   }
@@ -38,4 +42,3 @@ export class InMemoryStore {
       .slice(0, limit);
   }
 }
-

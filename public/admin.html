@@ -17,50 +17,62 @@
       <header class="admin-header">
         <div>
           <p class="eyebrow">Consumer Behavior Prototype</p>
-          <h1>Live Prediction Dashboard</h1>
+          <h1>Admin Analytics Dashboard</h1>
         </div>
         <div class="admin-actions">
           <button id="refreshBtn" class="btn btn-secondary">Refresh</button>
-          <a class="btn btn-primary" href="/">Back to Storefront</a>
+          <a class="btn btn-primary" href="/">Storefront</a>
         </div>
       </header>
 
-      <section class="kpi-grid">
-        <article class="kpi">
-          <p>Total Shown</p>
-          <strong id="kpiTotal">0</strong>
-        </article>
-        <article class="kpi">
-          <p>High Intent</p>
-          <strong id="kpiHigh">0</strong>
-        </article>
-        <article class="kpi">
-          <p>Medium Intent</p>
-          <strong id="kpiMedium">0</strong>
-        </article>
-        <article class="kpi">
-          <p>Low Intent</p>
-          <strong id="kpiLow">0</strong>
-        </article>
+      <section class="panel">
+        <h2>Product Engagement Comparison</h2>
+        <p class="muted">
+          Engagement score = views + 2x add-to-cart + 4x purchases
+        </p>
+        <div id="engagementChart" class="bar-chart"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Views</th>
+                <th>Add To Cart</th>
+                <th>Purchases</th>
+                <th>Engagement Score</th>
+              </tr>
+            </thead>
+            <tbody id="engagementRows"></tbody>
+          </table>
+        </div>
       </section>
 
-      <section class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Session</th>
-              <th>User</th>
-              <th>Score</th>
-              <th>Label</th>
-              <th>Features</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody id="predictionRows"></tbody>
-        </table>
+      <section class="panel">
+        <h2>User Purchase Likelihood by Product</h2>
+        <p class="muted">
+          Select a user to see which products they are likely to buy.
+        </p>
+        <div class="inline-controls">
+          <label for="userSelect">User ID</label>
+          <select id="userSelect"></select>
+        </div>
+        <div id="likelihoodChart" class="bar-chart"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Probability</th>
+                <th>User Views</th>
+                <th>User Add To Cart</th>
+                <th>User Purchases</th>
+              </tr>
+            </thead>
+            <tbody id="likelihoodRows"></tbody>
+          </table>
+        </div>
       </section>
     </main>
     <script type="module" src="/admin.js"></script>
   </body>
 </html>
-

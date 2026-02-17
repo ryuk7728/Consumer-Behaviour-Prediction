@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart | Northstar Outfitters</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="sub-header">
+      <a class="nav-link" href="/">Continue Shopping</a>
+      <a class="nav-link" href="/checkout.html">Go to Checkout</a>
+    </header>
+
+    <main class="checkout-wrap">
+      <section class="panel">
+        <h1>Your Cart</h1>
+        <p class="muted">Review your selected items before checkout.</p>
+        <ul id="cartList" class="cart-items cart-detailed"></ul>
+      </section>
+
+      <aside class="panel summary-panel">
+        <h2>Order Summary</h2>
+        <p class="muted">Estimated subtotal</p>
+        <p id="cartTotal" class="product-price">$0</p>
+        <a class="btn btn-primary product-link" href="/checkout.html">Proceed to Checkout</a>
+      </aside>
+    </main>
+
+    <script type="module" src="/cart.js"></script>
+  </body>
+</html>
+

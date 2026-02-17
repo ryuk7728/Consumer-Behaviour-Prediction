@@ -98,3 +98,85 @@ export function buildPrediction(sessionId, events) {
   };
 }
 
+export function summarizeEngagement(events, productCatalog) {
+  const byProduct = new Map(
+    productCatalog.map((product) => [
+      product.id,
+      {
+        product_id: product.id,
+        product_name: product.name,
+        views: 0,
+        add_to_cart: 0,
+        purchases: 0,
+        engagement_score: 0
+      }
+    ])
+  );
+
+  for (const event of events) {
+    const target = byProduct.get(event.product_id);
+    if (!target) continue;
+    if (event.event_type === "product_view") target.views += 1;
+    if (event.event_type === "add_to_cart") target.add_to_cart += 1;
+    if (event.event_type === "purchase") target.purchases += 1;
+  }
+
+  for (const metric of byProduct.values()) {
+    metric.engagement_score =
+      metric.views + 2 * metric.add_to_cart + 4 * metric.purchases;
+  }
+
+  return [...byProduct.values()].sort(
+    (a, b) => b.engagement_score - a.engagement_score
+  );
+}
+
+export function buildUserProductLikelihoods(events, productCatalog, userId) {
+  const userEvents = events.filter((event) => event.user_id === userId);
+  const globalSummary = summarizeEngagement(events, productCatalog);
+  const globalMap = new Map(
+    globalSummary.map((metric) => [metric.product_id, metric.engagement_score])
+  );
+  const globalMax = Math.max(
+    1,
+    ...globalSummary.map((metric) => metric.engagement_score)
+  );
+
+  const userByProduct = new Map(
+    productCatalog.map((product) => [
+      product.id,
+      {
+        product_id: product.id,
+        product_name: product.name,
+        user_views: 0,
+        user_add_to_cart: 0,
+        user_purchases: 0,
+        purchase_probability: 0
+      }
+    ])
+  );
+
+  for (const event of userEvents) {
+    const bucket = userByProduct.get(event.product_id);
+    if (!bucket) continue;
+    if (event.event_type === "product_view") bucket.user_views += 1;
+    if (event.event_type === "add_to_cart") bucket.user_add_to_cart += 1;
+    if (event.event_type === "purchase") bucket.user_purchases += 1;
+  }
+
+  for (const row of userByProduct.values()) {
+    const popularityBoost = (globalMap.get(row.product_id) || 0) / globalMax;
+    const rawScore =
+      0.35 * row.user_views +
+      0.95 * row.user_add_to_cart +
+      1.75 * row.user_purchases +
+      0.45 * popularityBoost -
+      1.1;
+    row.purchase_probability = Number(sigmoid(rawScore).toFixed(4));
+  }
+
+  return [...userByProduct.values()].sort(
+    (a, b) => b.purchase_probability - a.purchase_probability
+  );
+}
+

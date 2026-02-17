@@ -3,8 +3,7 @@
 Six-hour prototype of a cloud-style consumer behavior pipeline:
 - Storefront emits user events
 - Backend ingests and stores events
-- Session scoring predicts purchase likelihood
-- Admin dashboard shows latest predictions
+- Admin dashboard shows engagement and user product-likelihood analytics
 
 ## Stack
 - Node.js + Express API
@@ -17,6 +16,9 @@ Six-hour prototype of a cloud-style consumer behavior pipeline:
 - `POST /api/events`
 - `GET /api/predict?session_id=<id>`
 - `GET /api/admin/predictions?limit=20`
+- `GET /api/admin/engagement-summary`
+- `GET /api/admin/users`
+- `GET /api/admin/user-likelihood?user_id=<id>`
 
 ## Quick start
 1. Install deps:
@@ -35,7 +37,10 @@ npm start
 ```
 5. Open:
 - Storefront: `http://localhost:7071/`
-- Dashboard: `http://localhost:7071/admin`
+- Product page (example): `http://localhost:7071/product.html?id=P-100`
+- Cart: `http://localhost:7071/cart.html`
+- Checkout: `http://localhost:7071/checkout.html`
+- Admin dashboard: `http://localhost:7071/admin`
 
 ## Test checkpoints (mapped to project plan)
 1. Foundation
@@ -49,7 +54,8 @@ npm start
 4. Prediction
 - `GET /api/predict` returns score + label + feature set.
 5. Dashboard
-- `GET /api/admin/predictions` renders latest records.
+- `GET /api/admin/engagement-summary` renders product engagement comparison.
+- `GET /api/admin/user-likelihood` renders user-specific purchase probabilities.
 6. End-to-end
 - Run automated check:
 ```bash
@@ -58,4 +64,3 @@ npm run test:e2e
 
 ## Azure deployment intent
 This prototype is Azure-ready through Cosmos integration now. For full Azure runtime, deploy API to Azure Functions or App Service, configure env variables, and point the frontend to the deployed base URL.
-

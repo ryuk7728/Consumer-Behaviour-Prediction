@@ -82,6 +82,28 @@ async function run() {
     const admin = await adminRes.json();
     assert.ok(admin.count >= 1, "Admin endpoint should include at least one prediction");
 
+    const summaryRes = await fetch(`${baseUrl}/api/admin/engagement-summary`);
+    assert.equal(summaryRes.status, 200, "Engagement summary should return 200");
+    const summary = await summaryRes.json();
+    assert.ok(summary.products.length >= 4, "Summary should include all catalog products");
+
+    const usersRes = await fetch(`${baseUrl}/api/admin/users`);
+    assert.equal(usersRes.status, 200, "Users endpoint should return 200");
+    const users = await usersRes.json();
+    assert.ok(users.users.includes("U1"), "Users endpoint should include U1");
+
+    const likelihoodRes = await fetch(`${baseUrl}/api/admin/user-likelihood?user_id=U1`);
+    assert.equal(likelihoodRes.status, 200, "User likelihood should return 200");
+    const likelihood = await likelihoodRes.json();
+    assert.ok(
+      likelihood.likelihoods.some((row) => row.product_id === "P1") === false,
+      "Unknown product IDs should not be returned"
+    );
+    assert.ok(
+      likelihood.likelihoods.some((row) => row.product_id === "P-100"),
+      "Catalog products should be returned"
+    );
+
     console.log("All e2e tests passed");
   } finally {
     server.close();
@@ -92,4 +114,3 @@ run().catch((error) => {
   console.error("E2E tests failed:", error);
   process.exit(1);
 });
-

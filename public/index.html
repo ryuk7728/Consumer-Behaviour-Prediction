@@ -18,32 +18,23 @@
         <span class="brand">Northstar Outfitters</span>
         <div class="meta">
           <span id="sessionPill" class="pill"></span>
-          <a class="admin-link" href="/admin">Admin Dashboard</a>
+          <a class="nav-link" href="/cart.html">Cart</a>
         </div>
       </div>
       <div class="hero__content">
         <h1>Built for Weekend Escapes</h1>
         <p>
-          Explore durable essentials for travel, trail, and daily carry. Every
-          interaction in this prototype feeds the cloud prediction pipeline.
+          Explore durable essentials for travel, trail, and daily carry.
+          Open products, add items to cart, and complete checkout.
         </p>
       </div>
     </header>
 
-    <main class="layout">
+    <main class="catalog-layout">
       <section class="products" id="products"></section>
-
-      <aside class="sidebar">
-        <h2>Your Cart</h2>
-        <ul id="cartItems" class="cart-items"></ul>
-        <button id="purchaseBtn" class="btn btn-primary">Simulate Purchase</button>
-        <button id="predictBtn" class="btn btn-secondary">Get Session Prediction</button>
-        <div id="predictionCard" class="prediction-card hidden"></div>
-      </aside>
     </main>
 
     <div id="toast" class="toast hidden"></div>
     <script type="module" src="/storefront.js"></script>
   </body>
 </html>
-

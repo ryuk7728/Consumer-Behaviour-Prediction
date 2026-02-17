@@ -2,7 +2,14 @@ import cors from "cors";
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildPrediction, normalizeEvent, validateEventPayload } from "./utils.js";
+import { PRODUCT_CATALOG } from "./catalog.js";
+import {
+  buildPrediction,
+  buildUserProductLikelihoods,
+  normalizeEvent,
+  summarizeEngagement,
+  validateEventPayload
+} from "./utils.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -94,10 +101,37 @@ export function createApp({ store, corsOrigin }) {
     return res.status(200).json({ count: predictions.length, predictions });
   });
 
+  app.get("/api/admin/engagement-summary", async (_req, res) => {
+    const events = await store.getAllEvents();
+    const summary = summarizeEngagement(events, PRODUCT_CATALOG);
+    return res.status(200).json({ products: summary });
+  });
+
+  app.get("/api/admin/users", async (_req, res) => {
+    const events = await store.getAllEvents();
+    const users = [...new Set(events.map((event) => event.user_id))].sort();
+    return res.status(200).json({ users });
+  });
+
+  app.get("/api/admin/user-likelihood", async (req, res) => {
+    const userId = String(req.query.user_id || "");
+    if (!userId) {
+      return res.status(400).json({ error: "user_id query parameter is required" });
+    }
+
+    const events = await store.getAllEvents();
+    const hasUser = events.some((event) => event.user_id === userId);
+    if (!hasUser) {
+      return res.status(404).json({ error: "No events found for user_id" });
+    }
+
+    const likelihoods = buildUserProductLikelihoods(events, PRODUCT_CATALOG, userId);
+    return res.status(200).json({ user_id: userId, likelihoods });
+  });
+
   app.get("/admin", (_req, res) => {
     res.sendFile(path.join(publicDir, "admin.html"));
   });
 
   return app;
 }
-

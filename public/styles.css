@@ -202,8 +202,8 @@ body {
 
 .admin-wrap {
   max-width: 1120px;
-  margin: 1.2rem auto;
-  padding: 0 1rem;
+  margin: 1.8rem auto 2.6rem;
+  padding: 0 1.2rem;
 }
 
 .admin-header {
@@ -211,11 +211,18 @@ body {
   justify-content: space-between;
   align-items: end;
   gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.admin-header > div:first-child {
+  flex: 1;
+  min-width: 0;
 }
 
 .admin-actions {
   display: flex;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .admin-actions .btn {
@@ -223,6 +230,37 @@ body {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+}
+
+.admin-wrap .panel {
+  padding: 1.45rem 1.35rem;
+}
+
+.admin-wrap .panel + .panel {
+  margin-top: 1.75rem;
+}
+
+.admin-wrap .panel h2 {
+  margin: 0;
+  font-size: clamp(1.85rem, 2vw, 2.15rem);
+  line-height: 1.15;
+}
+
+.admin-wrap .panel > .muted {
+  margin-top: 0.65rem;
+  margin-bottom: 1.15rem;
+  font-size: 1.06rem;
+  line-height: 1.45;
+}
+
+.admin-header .eyebrow {
+  margin-bottom: 0.6rem;
+}
+
+.admin-header h1 {
+  font-size: clamp(2.2rem, 4.6vw, 3.95rem);
+  line-height: 1.03;
+  white-space: nowrap;
 }
 
 .sub-header {
@@ -339,26 +377,38 @@ body {
 .inline-controls {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.75rem;
+  gap: 0.75rem;
+  margin: 0.55rem 0 1.3rem;
+}
+
+.admin-wrap .inline-controls label {
+  font-size: 1.01rem;
+  font-weight: 600;
+}
+
+.admin-wrap .inline-controls select {
+  min-width: 220px;
+  padding: 0.62rem 0.8rem;
+  font-size: 0.98rem;
 }
 
 .bar-chart {
   display: grid;
-  gap: 0.5rem;
-  margin-bottom: 0.9rem;
+  gap: 0.78rem;
+  margin-bottom: 1.25rem;
 }
 
 .metric-row {
   display: grid;
-  grid-template-columns: 190px minmax(0, 1fr) 70px;
+  grid-template-columns: 225px minmax(0, 1fr) 78px;
   align-items: center;
-  gap: 0.6rem;
-  font-size: 0.88rem;
+  gap: 0.85rem;
+  font-size: 0.97rem;
+  line-height: 1.35;
 }
 
 .metric-track {
-  height: 11px;
+  height: 12px;
   background: #dbe3e3;
   border-radius: 999px;
   overflow: hidden;
@@ -413,7 +463,7 @@ body {
 }
 
 .table-wrap {
-  margin-top: 1rem;
+  margin-top: 1.25rem;
   overflow-x: auto;
   border: 1px solid rgba(19, 32, 37, 0.1);
   border-radius: 14px;
@@ -438,6 +488,20 @@ th {
   letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #45545a;
+}
+
+.admin-wrap table {
+  font-size: 0.94rem;
+}
+
+.admin-wrap th,
+.admin-wrap td {
+  padding: 0.92rem 0.85rem;
+}
+
+.admin-wrap th {
+  font-size: 0.84rem;
+  letter-spacing: 0.04em;
 }
 
 .badge {
@@ -474,6 +538,27 @@ th {
 
   .metric-row {
     grid-template-columns: 1fr;
+  }
+
+  .admin-wrap {
+    margin-top: 1.2rem;
+    padding: 0 0.9rem;
+  }
+
+  .admin-header {
+    margin-bottom: 1.35rem;
+  }
+
+  .admin-header h1 {
+    white-space: normal;
+  }
+
+  .admin-wrap .panel {
+    padding: 1.1rem 1rem;
+  }
+
+  .admin-wrap .panel + .panel {
+    margin-top: 1.2rem;
   }
 }
 

@@ -35,6 +35,11 @@ async function run() {
       body: JSON.stringify(goodEvent)
     });
     assert.equal(postGood.status, 201, "Valid event should return 201");
+    const postGoodBody = await postGood.json();
+    assert.ok(
+      postGoodBody.predictions_saved >= 1,
+      "Valid event ingestion should auto-save at least one prediction"
+    );
 
     const postBad = await fetch(`${baseUrl}/api/events`, {
       method: "POST",
@@ -70,6 +75,11 @@ async function run() {
         timestamp: new Date(now.getTime() + 30000).toISOString()
       })
     });
+
+    const autoAdminRes = await fetch(`${baseUrl}/api/admin/predictions?limit=20`);
+    assert.equal(autoAdminRes.status, 200, "Admin endpoint should return 200");
+    const autoAdmin = await autoAdminRes.json();
+    assert.ok(autoAdmin.count >= 1, "Auto-save should create predictions");
 
     const predictionRes = await fetch(`${baseUrl}/api/predict?session_id=S1`);
     assert.equal(predictionRes.status, 200, "Prediction should return 200");

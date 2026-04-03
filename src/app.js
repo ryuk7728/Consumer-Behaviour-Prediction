@@ -63,18 +63,42 @@ export function createApp({ store, corsOrigin }) {
 
     let inserted = 0;
     let duplicates = 0;
+    const sessionsToScore = new Set();
 
     for (const event of normalized) {
       const result = await store.saveEvent(event);
       if (result.duplicate) duplicates += 1;
-      else inserted += 1;
+      else {
+        inserted += 1;
+        sessionsToScore.add(event.session_id);
+      }
+    }
+
+    let predictionsSaved = 0;
+    const predictionErrors = [];
+
+    for (const sessionId of sessionsToScore) {
+      try {
+        const sessionEvents = await store.getEventsBySession(sessionId);
+        if (!sessionEvents.length) continue;
+        const prediction = buildPrediction(sessionId, sessionEvents);
+        await store.savePrediction(prediction);
+        predictionsSaved += 1;
+      } catch (error) {
+        predictionErrors.push({
+          session_id: sessionId,
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
     }
 
     return res.status(201).json({
       message: "Events processed",
       inserted,
       duplicates,
-      total: normalized.length
+      total: normalized.length,
+      predictions_saved: predictionsSaved,
+      prediction_errors: predictionErrors
     });
   });
 
